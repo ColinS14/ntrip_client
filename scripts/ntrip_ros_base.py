@@ -16,6 +16,9 @@ from ntrip_client.ntrip_base import NTRIPBase
 from ntrip_client.ntrip_client import NTRIPClient
 from ntrip_client.nmea_parser import NMEAParser, NMEA_DEFAULT_MAX_LENGTH, NMEA_DEFAULT_MIN_LENGTH
 
+from rclpy.qos import qos_profile_sensor_data
+
+
 # Try to import a couple different types of RTCM messages
 _MAVROS_MSGS_NAME = "mavros_msgs"
 _RTCM_MSGS_NAME = "rtcm_msgs"
@@ -98,7 +101,7 @@ class NTRIPRosBase(Node):
       return False
     # Setup our subscribers
     self._nmea_sub = self.create_subscription(Sentence, 'nmea', self.subscribe_nmea, 10)
-    self._fix_sub = self.create_subscription(NavSatFix, 'fix', self.subscribe_fix, 10)
+    self._fix_sub = self.create_subscription(NavSatFix, 'fix', self.subscribe_fix, qos_profile_sensor_data)
 
     # Start the timer that will check for RTCM data
     self._rtcm_timer = self.create_timer(0.1, self.publish_rtcm)
